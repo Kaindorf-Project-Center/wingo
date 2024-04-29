@@ -52,7 +52,7 @@ export function Navbar() {
                     }
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
-                    <DropdownMenuLabel>Menü</DropdownMenuLabel>
+                    <DropdownMenuLabel>Menu</DropdownMenuLabel>
                     <DropdownMenuSeparator/>
                     <DropdownMenuGroup>
                         <DropdownMenuItem>
