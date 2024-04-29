@@ -9,6 +9,7 @@ import { container } from "tsyringe";
 import { useSubscribe } from "./hooks/useSubscribe";
 import AppCache from "./models/AppCache";
 import { backendURL } from "./static";
+import Requests from "@/pages/Requests.tsx";
 
 function App() {
   const appCache = container.resolve(AppCache);
