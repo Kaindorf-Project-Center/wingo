@@ -14,6 +14,12 @@ export interface Quote {
   template: string;
 }
 
+export interface Request {
+    teacherId: string;
+    userId: string;
+    quote: string;
+}
+
 export const bingoExampleData: BingoExampleData = {
   teachers: [
     {

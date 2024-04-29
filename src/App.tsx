@@ -51,6 +51,7 @@ function App() {
       <Route element={<NavbarContainer />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/build" element={<BuildBingo />} />
+        <Route path="/requests" element={<Requests/>}/>
         <Route path="/*" element={<NotFound />} />
       </Route>
       <Route
