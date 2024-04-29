@@ -8,7 +8,6 @@ const appCache: AppCache = container.resolve(AppCache);
 export function Dashboard() {
 
     if(appCache.userdata.value == null) {
-        console.log("WILL FETCH")
         fetch(backendURL + "/user", {
             mode: "cors",
             credentials: "include",

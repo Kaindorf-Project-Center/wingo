@@ -16,9 +16,9 @@ import {
 import {backendURL} from "../../../static.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {container} from "tsyringe";
-import {useSubscribe} from "@/lib/utils.ts";
 import {Skeleton} from "@/components/ui/skeleton.tsx";
 import AppCache from "@/models/AppCache.ts";
+import {useSubscribe} from "@/hooks/useSubscribe.ts";
 
 const appCache: AppCache = container.resolve(AppCache);
 
