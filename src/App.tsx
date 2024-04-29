@@ -7,6 +7,7 @@ import BuildBingo from "@/pages/BuildBingo.tsx";
 import {Route, Routes} from "react-router-dom";
 import {useSubscribe} from "@/hooks/useSubscribe.ts";
 import NotFound from "@/pages/NotFound.tsx";
+import Requests from "@/pages/Requests.tsx";
 
 const appcache = container.resolve(AppCache)
 
@@ -20,6 +21,7 @@ function App() {
           <Route element={<NavbarContainer />}>
               <Route path="/dashboard" element={<Dashboard />}/>
               <Route path="/build" element={<BuildBingo/>}/>
+              <Route path="/requests" element={<Requests/>}/>
               <Route path="/*" element={<NotFound/>}/>
           </Route>
           <Route path={"hs"} element={    <>
