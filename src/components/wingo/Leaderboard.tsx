@@ -48,7 +48,6 @@ export function Leaderboard() {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Player ID</TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Total Wins</TableHead>
                         <TableHead>Total Time</TableHead>
@@ -62,15 +61,13 @@ export function Leaderboard() {
                                     <TableCell><Skeleton className="h-[20px] rounded-xl"/></TableCell>
                                     <TableCell><Skeleton className="h-[20px] rounded-xl"/></TableCell>
                                     <TableCell><Skeleton className="h-[20px] rounded-xl"/></TableCell>
-                                    <TableCell><Skeleton className="h-[20px] rounded-xl"/></TableCell>
                                 </TableRow>
                             )
                         })
                         :
                         leaderboardEntrys.map((entry) => (
                             <TableRow key={entry.playerId}>
-                                <TableCell className="font-medium">{entry.playerId}</TableCell>
-                                <TableCell>{entry.name}</TableCell>
+                                <TableCell className="font-medium">{entry.name}</TableCell>
                                 <TableCell>{entry.totalWins}</TableCell>
                                 <TableCell>{entry.totalTime}</TableCell>
                             </TableRow>

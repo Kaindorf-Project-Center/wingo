@@ -16,12 +16,56 @@ import { RxAvatar } from "react-icons/rx";
 import { useNavigate } from "react-router-dom";
 import { container } from "tsyringe";
 import { backendURL } from "@/static.ts";
+import { toast } from "sonner"
 
 export function Navbar() {
   const appCache: AppCache = container.resolve(AppCache);
   const userData = useSubscribe(appCache.userdata);
 
   const navigate = useNavigate();
+
+  function logoutUser()
+  {
+    fetch(backendURL + "/user/logout", {
+      mode: "cors",
+      credentials: "include",
+      method: "POST",
+    })
+        .then((response) => {
+          if(response.ok)
+            navigate("/")
+          else
+            throw new Error("Response was not ok: " + response.statusText);
+        })
+        .catch((err) => {
+          toast("Logout failed", {
+            description: "Try again with stable connection to the server",
+          })
+          console.log(err)
+        })
+  }
+
+  function deleteUser()
+  {
+    fetch(backendURL + "/user", {
+      mode: "cors",
+      credentials: "include",
+      method: "DELETE",
+    })
+        .then((response) => {
+          if(response.ok)
+            navigate("/")
+          else
+            throw new Error("Response was not ok: " + response.statusText);
+        })
+        .catch((err) => {
+          toast("Delete failed", {
+            description: "Try again with stable connection to the server",
+          })
+          console.log(err)
+        })
+  }
+
 
   return (
     <div className={"flex justify-between p-4 dark:bg-gray-900"}>
@@ -57,10 +101,10 @@ export function Navbar() {
           <DropdownMenuLabel>Menu</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={deleteUser}>
               <span className={"text-red-500"}>delete account</span>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={logoutUser}>
               <span>log out</span>
             </DropdownMenuItem>
           </DropdownMenuGroup>
