@@ -6,71 +6,76 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-
-const invoices = [
-    {
-        invoice: "INV001",
-        paymentStatus: "Paid",
-        totalAmount: "$250.00",
-        paymentMethod: "Credit Card",
-    },
-    {
-        invoice: "INV002",
-        paymentStatus: "Pending",
-        totalAmount: "$150.00",
-        paymentMethod: "PayPal",
-    },
-    {
-        invoice: "INV003",
-        paymentStatus: "Unpaid",
-        totalAmount: "$350.00",
-        paymentMethod: "Bank Transfer",
-    },
-    {
-        invoice: "INV004",
-        paymentStatus: "Paid",
-        totalAmount: "$450.00",
-        paymentMethod: "Credit Card",
-    },
-    {
-        invoice: "INV005",
-        paymentStatus: "Paid",
-        totalAmount: "$550.00",
-        paymentMethod: "PayPal",
-    },
-    {
-        invoice: "INV006",
-        paymentStatus: "Pending",
-        totalAmount: "$200.00",
-        paymentMethod: "Bank Transfer",
-    },
-    {
-        invoice: "INV007",
-        paymentStatus: "Unpaid",
-        totalAmount: "$300.00",
-        paymentMethod: "Credit Card",
-    },
-]
+import {useEffect, useState} from "react";
+import {ILeaderboardEntry} from "@/models/ILeaderboardEntry.ts";
+import {backendURL} from "@/static.ts";
+import {Skeleton} from "@/components/ui/skeleton.tsx";
 
 export function Leaderboard() {
+
+    const [leaderboardEntrys, setLeaderboardEntrys] = useState<ILeaderboardEntry[]>([])
+
+    async function fetchLeaderboardEntrys() {
+        fetch(backendURL + "/user/leaderboard", {
+            mode: "cors",
+            credentials: "include",
+        })
+            .then(data => data.json())
+            .then(json => json.map((obj: {
+                discordId: string,
+                username: string,
+                totalWins: number,
+                totalTime: number
+            }): ILeaderboardEntry => {
+                return {
+                    playerId: obj.discordId,
+                    name: obj.username,
+                    totalWins: obj.totalWins,
+                    totalTime: obj.totalTime
+                }
+            }))
+            .then(entries => setLeaderboardEntrys(entries))
+            .catch(e => console.log("could not fetch leaderboard ", e));
+    }
+
+    useEffect(() => {
+        fetchLeaderboardEntrys();
+    }, []);
+
     return (
-        <Table>
-            <TableHeader>
-                <TableRow className={""}>
-                    <TableHead className="w-[100px]">Player ID</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Score</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {invoices.map((invoice) => (
-                    <TableRow key={invoice.invoice}>
-                        <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                        <TableCell>{invoice.paymentStatus}</TableCell>
-                        <TableCell>{invoice.paymentMethod}</TableCell>
+        <div className={"max-w-[1000px] w-full mx-auto m-6"}>
+            <p className={"text-3xl font-bold"}>Leaderboard</p>
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>Player ID</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Total Wins</TableHead>
+                        <TableHead>Total Time</TableHead>
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+                </TableHeader>
+                <TableBody>
+                    {leaderboardEntrys.length == 0 ?
+                        Array(5).fill(0).map((_, i) => {
+                            return (
+                                <TableRow key={i}>
+                                    <TableCell>
+                                        <Skeleton className="h-[50px] rounded-xl"/>
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        })
+                        :
+                        leaderboardEntrys.map((entry) => (
+                            <TableRow key={entry.playerId}>
+                                <TableCell className="font-medium">{entry.playerId}</TableCell>
+                                <TableCell>{entry.name}</TableCell>
+                                <TableCell>{entry.totalWins}</TableCell>
+                                <TableCell>{entry.totalTime}</TableCell>
+                            </TableRow>
+                        ))}
+                </TableBody>
+            </Table>
+        </div>
     )
 }
