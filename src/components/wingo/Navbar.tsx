@@ -15,7 +15,7 @@ import AppCache from "@/models/AppCache.ts";
 import { RxAvatar } from "react-icons/rx";
 import { useNavigate } from "react-router-dom";
 import { container } from "tsyringe";
-import { backendURL } from "../../static.ts";
+import { backendURL } from "@/static.ts";
 
 export function Navbar() {
   const appCache: AppCache = container.resolve(AppCache);
