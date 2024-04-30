@@ -56,12 +56,13 @@ export function Leaderboard() {
                 </TableHeader>
                 <TableBody>
                     {leaderboardEntrys.length == 0 ?
-                        Array(5).fill(0).map((_, i) => {
+                        Array(8).fill(0).map((_, i) => {
                             return (
                                 <TableRow key={i}>
-                                    <TableCell>
-                                        <Skeleton className="h-[50px] rounded-xl"/>
-                                    </TableCell>
+                                    <TableCell><Skeleton className="h-[20px] rounded-xl"/></TableCell>
+                                    <TableCell><Skeleton className="h-[20px] rounded-xl"/></TableCell>
+                                    <TableCell><Skeleton className="h-[20px] rounded-xl"/></TableCell>
+                                    <TableCell><Skeleton className="h-[20px] rounded-xl"/></TableCell>
                                 </TableRow>
                             )
                         })
