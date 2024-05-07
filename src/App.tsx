@@ -10,6 +10,7 @@ import AppCache from "./models/AppCache";
 import {backendURL} from "./static";
 import Requests from "@/pages/Requests.tsx";
 import {Toaster} from "@/components/ui/sonner.tsx";
+import {BingoGame} from "@/pages/BingoGame.tsx";
 
 function App() {
     const appCache = container.resolve(AppCache);
@@ -25,12 +26,10 @@ function App() {
             })
                 .then((data) => data.json())
                 .then((json) => {
-                    console.log(appCache.userdata.getValue());
                     appCache.userdata.next({
                         discordId: json.discordId,
                         username: json.username,
                     });
-                    console.log(appCache.userdata.getValue());
 
                     // Navigate to dashboard if logged in
                     if (location.pathname == "/") {
@@ -46,9 +45,10 @@ function App() {
     }, []);
 
     return (
-        <>
+        <div className={"h-screen w-screen"}>
             <Routes>
                 <Route path="/" element={<LandingPage/>}/>
+                <Route path="/game" element={<BingoGame />} />
                 <Route element={<NavbarContainer/>}>
                     <Route path="/dashboard" element={<Dashboard/>}/>
                     <Route path="/build" element={<BuildBingo/>}/>
@@ -57,7 +57,7 @@ function App() {
                 </Route>
             </Routes>
             <Toaster/>
-        </>
+        </div>
     );
 }
 

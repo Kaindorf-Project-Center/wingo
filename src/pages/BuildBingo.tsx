@@ -5,13 +5,10 @@ import { BingoExampleData, Quote, Teacher, bingoExampleData } from "@/data/bingo
 import { useEffect, useRef, useState } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-
-interface Board {
-  size: number;
-  columns: {
-    row: Array<Quote | undefined>;
-  }[];
-}
+import {useNavigate} from "react-router-dom";
+import {IBoard} from "@/models/IBoard.ts";
+import AppCache from "@/models/AppCache.ts";
+import {useService} from "@/hooks/useService.ts";
 
 interface Size {
   id: string;
@@ -32,6 +29,9 @@ interface DragIndex {
 }
 
 const BuildBingo = () => {
+  const appCache = useService(AppCache)
+  const navigate = useNavigate();
+
   // -----------------------------
   // State Variables
   // -----------------------------
@@ -39,7 +39,7 @@ const BuildBingo = () => {
   const [data, setData] = useState<BingoExampleData | null>(null);
   const [teacher, setTeacher] = useState<Teacher | null>(null);
   const [size, setSize] = useState<Size | null>(null);
-  const [board, setBoard] = useState<Board | null>(null);
+  const [board, setBoard] = useState<IBoard | null>(null);
 
   // -----------------------------
   // Effects
@@ -76,7 +76,23 @@ const BuildBingo = () => {
   // -----------------------------
 
   const startGame = async () => {
-    console.log("start game now with board: " + board);
+    if(board == null)
+      return
+
+    const saidQuotes: boolean[][] = []
+    for (let i = 0; i < board.size; i++) {
+      saidQuotes.push([])
+      for (let j = 0; j < board.size; j++) {
+        saidQuotes[i].push(false)
+      }
+    }
+
+    appCache.playingGame.next({
+      board: board,
+      saidQuotes: saidQuotes,
+    })
+
+    navigate("/game");
   };
 
   // -----------------------------
@@ -85,7 +101,6 @@ const BuildBingo = () => {
 
   const resetBoard = (size?: number) => {
     if (size != null) {
-      Array(3).fill(undefined);
       setBoard({
         size: size,
         columns: Array.from({ length: size }, () => ({ row: Array.from({ length: size }, () => undefined) })),
@@ -100,7 +115,7 @@ const BuildBingo = () => {
       return;
     }
 
-    const newBoard: Board = { ...board };
+    const newBoard: IBoard = { ...board };
 
     // remove from board
     if (from != null && to == null) {
@@ -143,7 +158,7 @@ const BuildBingo = () => {
       {/*
       // -----------------------------
       // Step 1: Select teacher
-      // -----------------------------  
+      // -----------------------------
       */}
 
       <Step number={1} title="Select teacher" />
@@ -168,7 +183,7 @@ const BuildBingo = () => {
       {/*
       // -----------------------------
       // Step 2: Select board size
-      // -----------------------------  
+      // -----------------------------
       */}
 
       {teacher != null && (
@@ -197,7 +212,7 @@ const BuildBingo = () => {
       {/*
       // -----------------------------
       // Step 3: Build game
-      // -----------------------------  
+      // -----------------------------
       */}
 
       {teacher != null && size != null && (
@@ -209,7 +224,7 @@ const BuildBingo = () => {
               {/* Left/top */}
               {teacher != null && board != null && (
                 <div
-                  style={{ width: "500px", maxWidth: "500px" }}
+                  style={{ width: "500px", maxWidth: "500px", height: "500px", overflowY: "scroll" }}
                   className="bg-indigo-500 bg-opacity-25 rounded-2xl p-5 flex flex-col gap-5"
                 >
                   {availableQuotes.map((c) => {
@@ -257,7 +272,7 @@ const BuildBingo = () => {
       {/*
       // -----------------------------
       // Step 4: Start game
-      // -----------------------------  
+      // -----------------------------
       */}
 
       {board != null && (
@@ -345,12 +360,12 @@ const DropZone = (props: {
   return (
     <div
       ref={ref}
-      className={`relative w-full flex-1  rounded-2xl p-4 cursor-pointer flex-1 ${
+      className={`relative w-full flex-1 rounded-2xl p-4 cursor-pointer ${
         isOver && canDrop ? "bg-indigo-400" : props.quote == null ? "bg-indigo-200" : "bg-indigo-500"
       }`}
       onClick={() => props.quote && props.handleMove(props.quote, props.index, undefined)}
     >
-      <div className="absolute inset-0 p-1 p-3 truncate">
+      <div className="absolute inset-0 p-3 truncate">
         <p className="text-xs text-center whitespace-normal">{props.quote?.template}</p>
       </div>
     </div>
