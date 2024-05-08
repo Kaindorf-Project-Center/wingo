@@ -17,7 +17,7 @@ export function SlidePicker(props: Props) {
 
     const indicatorRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
     const optionsContainerRef = useRef<HTMLDivElement>(null)
-    const [maxWidth, setMaxWidth] = useState<number | undefined>(undefined)
+    const [maxWidth, setMaxWidth] = useState<number>(0)
 
     // -----------------------------
     // Effects
@@ -47,24 +47,31 @@ export function SlidePicker(props: Props) {
                 }
             })
 
-            if(maxWidth == undefined || newMax > maxWidth)
-                setMaxWidth(newMax)
+            setMaxWidth(newMax)
         }
-    }, [optionsContainerRef, maxWidth]);
-
-    useEffect(() => {
-        if(maxWidth != undefined)
-            setMaxWidth(undefined)
-    }, [props.values])
+    }, [optionsContainerRef, props.values]);
 
     return (
-        <div className="bg-[#6C6C6C77] rounded-md relative">
+        <div className="bg-[#6C6C6C77] rounded-md relative" style={{width: `${maxWidth * props.values.length}px`}}>
             <div ref={indicatorRef} className={"absolute h-full bg-[#99999977] rounded-md z-0 top-0 left-0 transition-all " + (props.selectedIndex == undefined ? "hidden" : "")} />
-            <div ref={optionsContainerRef} className={"flex"}>
+
+            <div ref={optionsContainerRef} className="absolute">
+                {
+                    values.map((value: string) => {
+                        return (
+                            <div key={value} className={"p-1 z-10 h-full cursor-default flex justify-center absolute invisible"}>
+                                {value}
+                            </div>
+                        )
+                    })
+                }
+            </div>
+
+            <div className={"flex"}>
                 {
                     values.map((value: string, index: number) => {
                         return (
-                            <div key={value} className={"p-1 z-10 h-full cursor-default flex justify-center"} style={{width: maxWidth == undefined ? "auto" : `${maxWidth}px`}}
+                            <div key={value} className={"p-1 z-10 h-full cursor-default flex justify-center"} style={{width: `${maxWidth}px`}}
                                  onClick={() => props.setSelectedIndex(index)}>
                                 {value}
                             </div>
