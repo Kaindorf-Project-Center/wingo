@@ -1,4 +1,4 @@
-import {RefObject, useEffect, useReducer, useRef} from "react";
+import {RefObject, useEffect, useRef, useState} from "react";
 
 type Props = {
     values: string[]
@@ -17,7 +17,7 @@ export function SlidePicker(props: Props) {
 
     const indicatorRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
     const optionsContainerRef = useRef<HTMLDivElement>(null)
-    const [maxWidth, setMaxWidth] = useReducer((_value: number | undefined, newValue: number | undefined) => newValue, undefined)
+    const [maxWidth, setMaxWidth] = useState<number | undefined>(undefined)
 
     // -----------------------------
     // Effects
