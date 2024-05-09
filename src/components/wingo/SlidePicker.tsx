@@ -4,9 +4,11 @@ type Props = {
     values: string[]
     selectedIndex: number | undefined,
     setSelectedIndex: (index: number | undefined) => void
+    backgroundColor?: string
+    foregroundColor?: string
 };
 
-
+const sliderItemStyle: string = "p-1 z-10 h-full cursor-default flex justify-center px-3"
 
 export function SlidePicker(props: Props) {
     const values: string[] = Array.from(new Set(props.values))
@@ -52,14 +54,16 @@ export function SlidePicker(props: Props) {
     }, [optionsContainerRef, props.values]);
 
     return (
-        <div className="bg-[#6C6C6C77] rounded-md relative" style={{width: `${maxWidth * props.values.length}px`}}>
-            <div ref={indicatorRef} className={"absolute h-full bg-[#99999977] rounded-md z-0 top-0 left-0 transition-all " + (props.selectedIndex == undefined ? "hidden" : "")} />
+        <div className="relative inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground" style={{background: props.backgroundColor ?? "#6C6C6C77" ,width: `${maxWidth * props.values.length}px`}}>
+            <div ref={indicatorRef} className={"absolute h-full w-full z-0 top-0 left-0 p-1 " + (props.selectedIndex == undefined ? "hidden" : "transition-all")}>
+                <div className={"h-full w-full rounded-sm bg-opacity-40"} style={{background: props.foregroundColor ?? "#999"}} />
+            </div>
 
             <div ref={optionsContainerRef} className="absolute">
                 {
                     values.map((value: string) => {
                         return (
-                            <div key={value} className={"p-1 z-10 h-full cursor-default flex justify-center absolute invisible"}>
+                            <div key={value} className={"absolute invisible " + sliderItemStyle}>
                                 {value}
                             </div>
                         )
@@ -71,7 +75,7 @@ export function SlidePicker(props: Props) {
                 {
                     values.map((value: string, index: number) => {
                         return (
-                            <div key={value} className={"p-1 z-10 h-full cursor-default flex justify-center"} style={{width: `${maxWidth}px`}}
+                            <div key={value} className={sliderItemStyle} style={{width: `${maxWidth}px`}}
                                  onClick={() => props.setSelectedIndex(index)}>
                                 {value}
                             </div>
