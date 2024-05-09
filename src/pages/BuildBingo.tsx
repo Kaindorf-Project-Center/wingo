@@ -1,6 +1,5 @@
 import {Button} from "@/components/ui/button";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import Step from "@/components/wingo/Step";
 import {BingoExampleData, Quote, Teacher, bingoExampleData} from "@/data/bingoExampleData";
 import {useEffect, useRef, useState} from "react";
 import {DndProvider, useDrag, useDrop} from "react-dnd";
@@ -9,6 +8,7 @@ import {useNavigate} from "react-router-dom";
 import {IBoard} from "@/models/IBoard.ts";
 import AppCache from "@/models/AppCache.ts";
 import {useService} from "@/hooks/useService.ts";
+import {SlidePicker} from "@/components/wingo/SlidePicker.tsx";
 
 interface Size {
     id: string;
@@ -17,8 +17,10 @@ interface Size {
 }
 
 const sizes: Size[] = [
-    {id: "1", size: 3, name: "3x3"},
-    {id: "2", size: 4, name: "4x4"},
+    {id: "1", size: 2, name: "2x2"},
+    {id: "2", size: 3, name: "3x3"},
+    {id: "3", size: 4, name: "4x4"},
+    {id: "4", size: 5, name: "5x5"},
 ];
 
 const DragItemType = "quote";
@@ -144,17 +146,19 @@ const BuildBingo = () => {
     const allFilled = board != null && quotesInBoard.length == (size?.size ?? 0) * (size?.size ?? 0);
 
     return (
-        <div className="container my-6">
+        <div className="h-full max-w-[1000px] bg-slate-950 mx-auto py-6">
             {/* Intro */}
-            <h1 className="text-2xl">Build your Game</h1>
-            <p className="mt-1">
-                Start by selecting a teacher, then build out the Bingo game build. If you're unsure how Bingo works,
-                checkout{" "}
-                <a className="underline" href="https://www.youtube.com/watch?v=nGCEpUAnkSg" target="_blank">
-                    this video
-                </a>
-                .
-            </p>
+            <div className={"px-6 pb-3 border-b"}>
+                <h1 className="text-2xl">Build your Game</h1>
+                <p className="mt-1">
+                    Start by selecting a teacher, then build out the Bingo game build. If you're unsure how Bingo works,
+                    checkout{" "}
+                    <a className="underline" href="https://www.youtube.com/watch?v=nGCEpUAnkSg" target="_blank">
+                        this video
+                    </a>
+                    .
+                </p>
+            </div>
 
             {/*
             // -----------------------------
@@ -162,32 +166,32 @@ const BuildBingo = () => {
             // -----------------------------
             */}
 
-            <div className="flex">
+            <div className="flex w-full h-[calc(570px)]">
                 {/*
                 // -----------------------------
                 // Step 1: Select teacher & teacher quotes
                 // -----------------------------
                 */}
-                <div className={"w-full"}>
+                <div className={"w-[40%] border-r"}>
                     <div>
-                        <Step number={1} title="Select teacher"/>
-
-                        <Select onValueChange={(v) => setTeacher(data!.teachers.find((t) => t.id == v)!)}>
-                            <SelectTrigger className="max-w-[400px]">
-                                <SelectValue placeholder="Select a teacher"/>
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    {data?.teachers.map((t) => {
-                                        return (
-                                            <SelectItem key={t.id} value={t.id}>
-                                                {t.name + " (" + t.shortName + ")"}
-                                            </SelectItem>
-                                        );
-                                    })}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+                        <div className={"p-3"}>
+                            <Select onValueChange={(v) => setTeacher(data!.teachers.find((t) => t.id == v)!)}>
+                                <SelectTrigger className="max-w-[400px]">
+                                    <SelectValue placeholder="Select a teacher"/>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        {data?.teachers.map((t) => {
+                                            return (
+                                                <SelectItem key={t.id} value={t.id}>
+                                                    {t.name + " (" + t.shortName + ")"}
+                                                </SelectItem>
+                                            );
+                                        })}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
 
                     {/*
@@ -198,14 +202,7 @@ const BuildBingo = () => {
 
                     <DndProvider backend={HTML5Backend}>
                         <div
-                            style={{
-                                width: "100%",
-                                maxWidth: "500px",
-                                height: "100%",
-                                maxHeight: "500px",
-                                overflowY: "scroll"
-                            }}
-                            className="bg-indigo-500 bg-opacity-25 rounded-2xl p-5 flex flex-col gap-5"
+                            className="w-full max-w-[500px] h-full max-h-[500px] overflow-y-scroll px-5 flex flex-col gap-5"
                         >
                             {teacher != null &&
                                 availableQuotes.map((c) => {
@@ -222,84 +219,68 @@ const BuildBingo = () => {
                     </DndProvider>
                 </div>
 
+
                 {/*
                 // -----------------------------
                 // Step 2: Select board size & drop fields
                 // -----------------------------
                 */}
-                <div className={"w-full"}>
-                    <div>
-                        <Step number={2} title="Choose board size"/>
+                <div className={"w-[60%]"}>
+                    <div className={"mx-auto max-w-[500px]"}>
+                        <div className={"py-3 flex items-center gap-3 justify-between"}>
+                            <div className={"flex items-center gap-3"}>
+                                <p className={"text-lg"}>Field size: </p>
 
-                        <Select onValueChange={(v) => setSize(sizes.find((s) => s.id == v)!)}>
-                            <SelectTrigger className="max-w-[400px]">
-                                <SelectValue placeholder="Select size"/>
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    {sizes.map((s) => {
-                                        return (
-                                            <SelectItem key={s.id} value={s.id}>
-                                                {s.name}
-                                            </SelectItem>
-                                        );
-                                    })}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-                    </div>
+                                <SlidePicker
+                                    values={sizes.map(s => s.name)}
+                                    selectedIndex={size ? sizes.findIndex(s => s.id === size.id) : undefined}
+                                    setSelectedIndex={i => setSize(i == undefined ? null : sizes[i])}
+                                />
+                            </div>
 
-                    {/*
+                            {/*
+                            // -----------------------------
+                            // Start game
+                            // -----------------------------
+                            */}
+
+                            <Button onClick={() => startGame()} disabled={!allFilled}>Start Game</Button>
+                        </div>
+
+                        {/*
                     // -----------------------------
                     // Wingo grid drop fields
                     // -----------------------------
                     */}
 
-                    <DndProvider backend={HTML5Backend}>
-                        <div
-                            style={{width: "100%", maxWidth: "500px", maxHeight: "500px", height: "100%"}}
-                            className="bg-indigo-500 bg-opacity-25 rounded-2xl p-5 flex flex-col gap-3 flex-1 aspect-square"
-                        >
-                            {board != null &&
-                                board.columns.map((c, ci) => {
-                                    return (
-                                        <div key={ci} className="flex flex-row flex-1 gap-3">
-                                            {c.row.map((q, qi) => {
-                                                const index = ci + "-" + qi;
-                                                return (
-                                                    <DropZone
-                                                        key={index}
-                                                        quote={q}
-                                                        index={{column: ci, row: qi}}
-                                                        handleMove={(quote, from, to) => handleMove(quote, from, to)}
-                                                    />
-                                                );
-                                            })}
-                                        </div>
-                                    );
-                                })
-                            }
-                        </div>
-                    </DndProvider>
+                        <DndProvider backend={HTML5Backend}>
+                            <div
+                                className="w-full max-w-[500px] h-full max-h-[500px] bg-indigo-500 bg-opacity-25 rounded-lg p-3 flex flex-col gap-3 flex-1 aspect-square"
+                            >
+                                {board != null &&
+                                    board.columns.map((c, ci) => {
+                                        return (
+                                            <div key={ci} className="flex flex-row flex-1 gap-3">
+                                                {c.row.map((q, qi) => {
+                                                    const index = ci + "-" + qi;
+                                                    return (
+                                                        <DropZone
+                                                            key={index}
+                                                            quote={q}
+                                                            index={{column: ci, row: qi}}
+                                                            handleMove={(quote, from, to) => handleMove(quote, from, to)}
+                                                        />
+                                                    );
+                                                })}
+                                            </div>
+                                        );
+                                    })
+                                }
+                            </div>
+                        </DndProvider>
+                    </div>
                 </div>
             </div>
-
-
-            {/*
-            // -----------------------------
-            // Step 4: Start game
-            // -----------------------------
-            */}
-
-            {teacher != null && board != null && (
-                <div>
-                    <Step number={4} title="Start game"/>
-
-                    {!allFilled && <p>Please fill the entire board before starting a game...</p>}
-
-                    {allFilled && <Button onClick={() => startGame()}>Start Game</Button>}
-                </div>
-            )}
         </div>
     );
 };
@@ -327,7 +308,7 @@ const DraggableQuote = (props: {
     });
 
     return (
-        <div className="bg-indigo-500 rounded-2xl p-4 cursor-pointer" ref={drag}>
+        <div className="bg-indigo-500 rounded-lg p-4 cursor-pointer" ref={drag}>
             <p>{props.quote.template}</p>
         </div>
     );
@@ -376,12 +357,12 @@ const DropZone = (props: {
     return (
         <div
             ref={ref}
-            className={`relative w-full flex-1 rounded-2xl p-4 cursor-pointer ${
+            className={`relative w-full flex-1 rounded-md p-4 cursor-pointer ${
                 isOver && canDrop ? "bg-indigo-400" : props.quote == null ? "bg-indigo-200" : "bg-indigo-500"
             }`}
             onClick={() => props.quote && props.handleMove(props.quote, props.index, undefined)}
         >
-            <div className="absolute inset-0 p-3 truncate">
+            <div className="absolute inset-0 p-3 flex justify-center items-center overflow-y-scroll">
                 <p className="text-xs text-center whitespace-normal">{props.quote?.template}</p>
             </div>
         </div>
