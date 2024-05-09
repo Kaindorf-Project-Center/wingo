@@ -149,7 +149,7 @@ const BuildBingo = () => {
         <div className="h-full max-w-[1000px] bg-slate-950 mx-auto py-6">
             {/* Intro */}
             <div className={"px-6 pb-3 border-b"}>
-                <h1 className="text-2xl">Build your Game</h1>
+                <h1 className="text-2xl font-bold">Build your Game</h1>
                 <p className="mt-1">
                     Start by selecting a teacher, then build out the Bingo game build. If you're unsure how Bingo works,
                     checkout{" "}
