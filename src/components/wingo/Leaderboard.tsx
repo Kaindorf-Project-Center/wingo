@@ -16,19 +16,19 @@ export function Leaderboard() {
     const [leaderboardEntrys, setLeaderboardEntrys] = useState<ILeaderboardEntry[]>([])
 
     async function fetchLeaderboardEntrys() {
-        fetch(backendURL + "/user/leaderboard", {
+        fetch(backendURL + "/leaderboard", {
             mode: "cors",
             credentials: "include",
         })
             .then(data => data.json())
             .then(json => json.map((obj: {
-                discordId: string,
+                userId: string,
                 username: string,
                 totalWins: number,
                 totalTime: number
             }): ILeaderboardEntry => {
                 return {
-                    playerId: obj.discordId,
+                    playerId: obj.userId,
                     name: obj.username,
                     totalWins: obj.totalWins,
                     totalTime: obj.totalTime

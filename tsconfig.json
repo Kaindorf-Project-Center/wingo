@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["react/experimental"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "baseUrl": ".",

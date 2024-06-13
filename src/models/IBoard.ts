@@ -1,9 +1,11 @@
-import {Quote, Teacher} from "@/data/bingoExampleData.ts";
+import {ITeacher} from "@/models/ITeacher.ts";
+import {IQuote} from "@/models/IQuote.ts";
+
 
 export interface IBoard {
-    teacher?: Teacher,
+    teacher?: ITeacher,
     size: number;
     columns: {
-        row: Array<Quote | undefined>;
+        row: Array<IQuote | undefined>;
     }[];
 }

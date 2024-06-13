@@ -6,7 +6,7 @@ import {useSavedBehaviorSubject} from "@/hooks/useSavedBehaviorSubject.ts";
 
 @singleton()
 class AppCache {
-    userdata: BehaviorSubject<IUserData | null> = new BehaviorSubject<IUserData | null>(null);
+    public readonly userdata: BehaviorSubject<IUserData | null> = useSavedBehaviorSubject<IUserData>("userData");
     public readonly playingGame: BehaviorSubject<IGame | null> = useSavedBehaviorSubject<IGame>("playingGame");
 }
 export default AppCache;

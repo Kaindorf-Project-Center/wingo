@@ -74,6 +74,7 @@ export function Navbar() {
           wingo
         </a>
         <Button onClick={() => navigate("/build")}>Play</Button>
+        <Button variant={"secondary"} onClick={() => navigate("/requests")}>Request Quotes</Button>
       </div>
 
       <DropdownMenu>

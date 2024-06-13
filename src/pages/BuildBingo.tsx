@@ -1,6 +1,6 @@
 import {Button} from "@/components/ui/button";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {BingoExampleData, Quote, Teacher, bingoExampleData} from "@/data/bingoExampleData";
+import {BingoExampleData, bingoExampleData} from "@/data/bingoExampleData";
 import {useEffect, useRef, useState} from "react";
 import {DndProvider, useDrag, useDrop} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
@@ -9,6 +9,11 @@ import {IBoard} from "@/models/IBoard.ts";
 import AppCache from "@/models/AppCache.ts";
 import {useService} from "@/hooks/useService.ts";
 import {SlidePicker} from "@/components/wingo/SlidePicker.tsx";
+import {ITeacher} from "@/models/ITeacher.ts";
+import {IQuote} from "@/models/IQuote.ts";
+import {useSubscribe} from "@/hooks/useSubscribe.ts";
+import {backendURL} from "@/static.ts";
+import {ILeaderboardEntry} from "@/models/ILeaderboardEntry.ts";
 
 interface Size {
     id: string;
@@ -38,8 +43,10 @@ const BuildBingo = () => {
     // State Variables
     // -----------------------------
 
+    const [teachers, setTeachers] = useState<ITeacher[]>([]);
+
     const [data, setData] = useState<BingoExampleData | null>(null);
-    const [teacher, setTeacher] = useState<Teacher | null>(null);
+    const [teacher, setTeacher] = useState<ITeacher | null>(null);
     const [size, setSize] = useState<Size | null>(null);
     const [board, setBoard] = useState<IBoard | null>(null);
 
@@ -70,6 +77,28 @@ const BuildBingo = () => {
 
     const loadData = async () => {
         // TODO: load actual data
+
+        fetch(backendURL + "/teachers", {
+            mode: "cors",
+            credentials: "include",
+        })
+            .then((res) => res.json())
+            .then(json => json.map((obj: {
+                userId: string,
+                username: string,
+                totalWins: number,
+                totalTime: number
+            }): ILeaderboardEntry => {
+                return {
+                    playerId: obj.userId,
+                    name: obj.username,
+                    totalWins: obj.totalWins,
+                    totalTime: obj.totalTime
+                }
+            }))
+
+        setTeachers()
+
         setData(bingoExampleData);
     };
 
@@ -112,7 +141,7 @@ const BuildBingo = () => {
         }
     };
 
-    const handleMove = (quote: Quote, from?: DragIndex, to?: DragIndex) => {
+    const handleMove = (quote: IQuote, from?: DragIndex, to?: DragIndex) => {
         if (board == null) {
             return;
         }
@@ -139,7 +168,7 @@ const BuildBingo = () => {
     };
 
     const quotesInBoard =
-        board?.columns.flatMap((column) => column.row).filter((quote): quote is Quote => quote !== undefined) ?? [];
+        board?.columns.flatMap((column) => column.row).filter((quote): quote is IQuote => quote !== undefined) ?? [];
 
     const availableQuotes = teacher?.quotes.filter((c) => !quotesInBoard.some((bc) => bc == c)) ?? [];
 
@@ -175,7 +204,7 @@ const BuildBingo = () => {
                 <div className={"w-[40%] border-r"}>
                     <div>
                         <div className={"p-3"}>
-                            <Select onValueChange={(v) => setTeacher(data!.teachers.find((t) => t.id == v)!)}>
+                            <Select onValueChange={(v) => setTeacher(data!.teachers.find((t) => t.teacherId == v)!)}>
                                 <SelectTrigger className="max-w-[400px]">
                                     <SelectValue placeholder="Select a teacher"/>
                                 </SelectTrigger>
@@ -183,8 +212,8 @@ const BuildBingo = () => {
                                     <SelectGroup>
                                         {data?.teachers.map((t) => {
                                             return (
-                                                <SelectItem key={t.id} value={t.id}>
-                                                    {t.name + " (" + t.shortName + ")"}
+                                                <SelectItem key={t.teacherId} value={t.teacherId}>
+                                                    {t.name + " (" + t.shorthand + ")"}
                                                 </SelectItem>
                                             );
                                         })}
@@ -208,7 +237,7 @@ const BuildBingo = () => {
                                 availableQuotes.map((c) => {
                                     return (
                                         <DraggableQuote
-                                            key={c.id}
+                                            key={c.quoteId}
                                             quote={c}
                                             handleMove={(quote, from, to) => handleMove(quote, from, to)}
                                         />
@@ -290,12 +319,12 @@ const BuildBingo = () => {
 // -----------------------------
 
 const DraggableQuote = (props: {
-    quote: Quote;
-    handleMove: (quote: Quote, from?: DragIndex, to?: DragIndex) => void;
+    quote: IQuote;
+    handleMove: (quote: IQuote, from?: DragIndex, to?: DragIndex) => void;
 }) => {
     const [, drag] = useDrag({
         type: DragItemType,
-        item: {id: props.quote.id, quote: props.quote},
+        item: {id: props.quote.quoteId, quote: props.quote},
         end: (item, monitor) => {
             const dropResult = monitor.getDropResult();
             if (item && dropResult) {
@@ -307,9 +336,12 @@ const DraggableQuote = (props: {
         }),
     });
 
+    const ref = useRef<HTMLDivElement>(null);
+    drag(ref)
+
     return (
-        <div className="bg-indigo-500 rounded-lg p-4 cursor-pointer" ref={drag}>
-            <p>{props.quote.template}</p>
+        <div className="bg-indigo-500 rounded-lg p-4 cursor-pointer" ref={ref}>
+            <p>{props.quote.quote}</p>
         </div>
     );
 };
@@ -320,8 +352,8 @@ const DraggableQuote = (props: {
 
 const DropZone = (props: {
     index: DragIndex;
-    quote?: Quote;
-    handleMove: (quote: Quote, from?: DragIndex, to?: DragIndex) => void;
+    quote?: IQuote;
+    handleMove: (quote: IQuote, from?: DragIndex, to?: DragIndex) => void;
 }) => {
     // Setup drop target
     const [{isOver, canDrop}, drop] = useDrop({
@@ -336,7 +368,7 @@ const DropZone = (props: {
     // Setup drag source
     const [, drag] = useDrag({
         type: DragItemType,
-        item: {id: props.quote?.id, from: props.index},
+        item: {id: props.quote?.quoteId, from: props.index},
         canDrag: !!props.quote,
         end: (item, monitor) => {
             const dropResult = monitor.getDropResult();
@@ -363,7 +395,7 @@ const DropZone = (props: {
             onClick={() => props.quote && props.handleMove(props.quote, props.index, undefined)}
         >
             <div className="absolute inset-0 p-3 flex justify-center items-center overflow-y-scroll">
-                <p className="text-xs text-center whitespace-normal">{props.quote?.template}</p>
+                <p className="text-xs text-center whitespace-normal">{props.quote?.quote}</p>
             </div>
         </div>
     );
