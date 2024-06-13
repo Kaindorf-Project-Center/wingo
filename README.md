@@ -1,30 +1,35 @@
-# React + TypeScript + Vite
+# HTL Kaindorf Teacher Quotes Bingo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to the HTL Kaindorf Teacher Quotes Bingo game! This is a fun, web-based bingo game where you can play with quotes from your favorite teachers at HTL Kaindorf. Compete against your friends and climb the global leaderboard!
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Flexible Bingo Grid**: Play bingo on a grid sized from 2x2 to 5x5.
+- **Global Leaderboard**: Compete globally and see where you rank among your peers.
+- **Drag and Drop Gameplay**: Play bingo by dragging and dropping quotes from your selected teacher onto your bingo grid.
+- **Quote Requests**: Request quotes from specific teachers to enhance your bingo experience.
+- **Discord Integration**: Only accessible through the HTL-Kaindorf Discord server.
 
-## Expanding the ESLint configuration
+## How to Play
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. **Join the HTL-Kaindorf Discord**: Ensure you are a member of the HTL-Kaindorf Discord server.
+2. **Select Grid Size**: Choose your preferred bingo grid size (from 2x2 to 5x5).
+3. **Pick a Teacher**: Select a teacher from whom you want to use quotes.
+4. **Drag and Drop**: Drag and drop quotes from the selected teacher onto your bingo grid.
+5. **Play and Win**: Complete a row, column, or diagonal to win! Check your ranking on the global leaderboard.
 
-- Configure the top-level `parserOptions` property like this:
+## Requesting Quotes
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+If you want to add more quotes from a specific teacher:
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+1. **Open the Quotes Request Page**: Navigate to the quote request section of the game.
+2. **Select a Teacher**: Choose the teacher from whom you want more quotes.
+3. **Submit Request**: Fill in the request form and submit.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+For any inquiries or issues, please contact us via the HTL-Kaindorf Discord server.
