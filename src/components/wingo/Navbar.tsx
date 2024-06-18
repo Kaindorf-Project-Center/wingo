@@ -11,16 +11,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { useSubscribe } from "@/hooks/useSubscribe.ts";
-import AppCache from "@/models/AppCache.ts";
 import { RxAvatar } from "react-icons/rx";
 import { useNavigate } from "react-router-dom";
 import { container } from "tsyringe";
-import { backendURL } from "@/static.ts";
 import { toast } from "sonner"
+import {backendURL} from "@/api/apiClient.ts";
+import {UserData} from "@/data/UserData.ts";
 
 export function Navbar() {
-  const appCache: AppCache = container.resolve(AppCache);
-  const userData = useSubscribe(appCache.userdata);
+  const userdata = container.resolve(UserData);
+  const userData = useSubscribe(userdata.data);
 
   const navigate = useNavigate();
 
@@ -68,7 +68,7 @@ export function Navbar() {
 
 
   return (
-    <div className={"flex justify-between p-4 dark:bg-gray-900"}>
+    <div className={"flex justify-between p-4 bg-secondary"}>
       <div className={"flex gap-4"}>
         <a className={"text-3xl"} href="/dashboard">
           wingo

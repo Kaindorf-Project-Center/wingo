@@ -5,17 +5,22 @@ import './index.css'
 import {container} from "tsyringe";
 import AppCache from "@/models/AppCache.ts";
 import {BrowserRouter} from "react-router-dom";
-import {ThemeProvider} from "@/components/ThemeProvider.tsx";
 import React from "react";
+import {ThemeProvider} from "@/global/Theme.ts";
 
 container.registerSingleton(AppCache, AppCache)
 
+container.registerSingleton(ThemeProvider, ThemeProvider);
+const themeProvider: ThemeProvider = container.resolve(ThemeProvider);
+
+if (themeProvider.value.getValue() != null) {
+    import (`./themes/theme_${themeProvider.value.getValue()!}_vars.css`);
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-            <BrowserRouter>
-                <App/>
-            </BrowserRouter>
-        </ThemeProvider>
+        <BrowserRouter>
+            <App/>
+        </BrowserRouter>
     </React.StrictMode>,
 )

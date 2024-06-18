@@ -1,12 +1,10 @@
 import {singleton} from "tsyringe";
 import {BehaviorSubject} from "rxjs";
-import {IUserData} from "./IUserData.ts";
 import {IGame} from "@/models/IGame.ts";
-import {useSavedBehaviorSubject} from "@/hooks/useSavedBehaviorSubject.ts";
+import {useSessionBehaviorSubject} from "@/hooks/useSessionBehaviorSubject.ts";
 
 @singleton()
 class AppCache {
-    public readonly userdata: BehaviorSubject<IUserData | null> = useSavedBehaviorSubject<IUserData>("userData");
-    public readonly playingGame: BehaviorSubject<IGame | null> = useSavedBehaviorSubject<IGame>("playingGame");
+    public readonly playingGame: BehaviorSubject<IGame | null> = useSessionBehaviorSubject<IGame>("playingGame");
 }
 export default AppCache;

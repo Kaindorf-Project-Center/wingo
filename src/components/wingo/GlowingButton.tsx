@@ -1,4 +1,4 @@
-import { backendURL } from "../../static.ts";
+import {backendURL} from "@/api/apiClient.ts";
 
 export function GlowingButton() {
   return (

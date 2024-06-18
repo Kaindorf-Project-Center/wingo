@@ -6,6 +6,7 @@ import {useEffect, useReducer, useState} from "react";
 import {IGame} from "@/models/IGame.ts";
 import {useSubscribe} from "@/hooks/useSubscribe.ts";
 import {Button} from "@/components/ui/button.tsx";
+import {sendGameData} from "@/api/apiClient.ts";
 
 export function BingoGame() {
 
@@ -20,6 +21,7 @@ export function BingoGame() {
 
     const [selectedGrid, setSelectedGrid] = useState<boolean[][]>([])
     const [hasWon, setHasWon] = useState<boolean>(false)
+    const [beginTime, setBeginTime] = useState<Date>(new Date())
 
     const [time, dispatch] = useReducer(incrementTime, {
         seconds: 0,
@@ -88,6 +90,11 @@ export function BingoGame() {
         return diagonalRWin || diagonalLWin;
     }
 
+    async function finishGame() {
+        if(game)
+            sendGameData(game.board.teacher, game.board.columns.map(c => c.row))
+    }
+
     return (
         <div className={"flex flex-col items-center justify-center h-full w-full"}>
             <p className={"text-8xl font-bold mb-4"}>wingo</p>
@@ -115,7 +122,7 @@ export function BingoGame() {
                                             }}
                                         >
                                             <div className="absolute inset-0 p-3 truncate">
-                                                <p className="text-xs text-center whitespace-normal">{q?.template ?? "no quote"}</p>
+                                                <p className="text-xs text-center whitespace-normal">{q?.quote ?? "no quote"}</p>
                                             </div>
                                         </div>
                                     );
@@ -135,7 +142,7 @@ export function BingoGame() {
             {hasWon &&
                 <div className={"absolute h-screen w-screen bg-[#00000077] flex items-center justify-center flex-col"}>
                     <p className={"text-9xl"}>Gewonnen!</p>
-                    <Button variant={"secondary"}>Spieldaten senden und beenden</Button>
+                    <Button variant={"secondary"} onClick={finishGame}>Spieldaten senden und beenden</Button>
                 </div>
             }
         </div>

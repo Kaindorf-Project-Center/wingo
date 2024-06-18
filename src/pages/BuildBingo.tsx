@@ -1,6 +1,5 @@
 import {Button} from "@/components/ui/button";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {BingoExampleData, bingoExampleData} from "@/data/bingoExampleData";
 import {useEffect, useRef, useState} from "react";
 import {DndProvider, useDrag, useDrop} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
@@ -11,9 +10,9 @@ import {useService} from "@/hooks/useService.ts";
 import {SlidePicker} from "@/components/wingo/SlidePicker.tsx";
 import {ITeacher} from "@/models/ITeacher.ts";
 import {IQuote} from "@/models/IQuote.ts";
-import {useSubscribe} from "@/hooks/useSubscribe.ts";
-import {backendURL} from "@/static.ts";
-import {ILeaderboardEntry} from "@/models/ILeaderboardEntry.ts";
+import {getTeacherData} from "@/api/apiClient.ts";
+import {TeacherData} from "@/data/TeacherData.ts";
+import {container} from "tsyringe";
 
 interface Size {
     id: string;
@@ -39,13 +38,12 @@ const BuildBingo = () => {
     const appCache = useService(AppCache)
     const navigate = useNavigate();
 
+    const teachersData = container.resolve(TeacherData)
+
     // -----------------------------
     // State Variables
     // -----------------------------
 
-    const [teachers, setTeachers] = useState<ITeacher[]>([]);
-
-    const [data, setData] = useState<BingoExampleData | null>(null);
     const [teacher, setTeacher] = useState<ITeacher | null>(null);
     const [size, setSize] = useState<Size | null>(null);
     const [board, setBoard] = useState<IBoard | null>(null);
@@ -78,28 +76,7 @@ const BuildBingo = () => {
     const loadData = async () => {
         // TODO: load actual data
 
-        fetch(backendURL + "/teachers", {
-            mode: "cors",
-            credentials: "include",
-        })
-            .then((res) => res.json())
-            .then(json => json.map((obj: {
-                userId: string,
-                username: string,
-                totalWins: number,
-                totalTime: number
-            }): ILeaderboardEntry => {
-                return {
-                    playerId: obj.userId,
-                    name: obj.username,
-                    totalWins: obj.totalWins,
-                    totalTime: obj.totalTime
-                }
-            }))
-
-        setTeachers()
-
-        setData(bingoExampleData);
+        await getTeacherData()
     };
 
     // -----------------------------
@@ -204,16 +181,16 @@ const BuildBingo = () => {
                 <div className={"w-[40%] border-r"}>
                     <div>
                         <div className={"p-3"}>
-                            <Select onValueChange={(v) => setTeacher(data!.teachers.find((t) => t.teacherId == v)!)}>
+                            <Select onValueChange={(v) => setTeacher(teachersData.teachers.getValue()?.find((t) => t.teacherId == v) ?? null)}>
                                 <SelectTrigger className="max-w-[400px]">
                                     <SelectValue placeholder="Select a teacher"/>
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
-                                        {data?.teachers.map((t) => {
+                                        {teachersData.teachers.getValue()?.map((t) => {
                                             return (
                                                 <SelectItem key={t.teacherId} value={t.teacherId}>
-                                                    {t.name + " (" + t.shorthand + ")"}
+                                                    {t.shortHand + ": " + t.name}
                                                 </SelectItem>
                                             );
                                         })}

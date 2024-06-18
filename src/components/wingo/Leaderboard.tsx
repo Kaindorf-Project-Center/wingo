@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/table"
 import {useEffect, useState} from "react";
 import {ILeaderboardEntry} from "@/models/ILeaderboardEntry.ts";
-import {backendURL} from "@/static.ts";
 import {Skeleton} from "@/components/ui/skeleton.tsx";
+import {backendURL} from "@/api/apiClient.ts";
 
 export function Leaderboard() {
 
@@ -48,10 +48,10 @@ export function Leaderboard() {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Rank</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Total Wins</TableHead>
-                        <TableHead>Total Time</TableHead>
+                        <TableHead className={"text-secondary"}>Rank</TableHead>
+                        <TableHead className={"text-secondary"}>Name</TableHead>
+                        <TableHead className={"text-secondary"}>Total Wins</TableHead>
+                        <TableHead className={"text-secondary"}>Total Time</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>

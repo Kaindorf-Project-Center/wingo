@@ -3,9 +3,9 @@ import {IQuote} from "@/models/IQuote.ts";
 
 
 export interface IBoard {
-    teacher?: ITeacher,
+    teacher: ITeacher,
     size: number;
     columns: {
-        row: Array<IQuote | undefined>;
+        row: IQuote[];
     }[];
 }
