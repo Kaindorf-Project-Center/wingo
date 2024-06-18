@@ -10,6 +10,23 @@ Welcome to the HTL Kaindorf Teacher Quotes Bingo game! This is a fun, web-based 
 - **Quote Requests**: Request quotes from specific teachers to enhance your bingo experience.
 - **Discord Integration**: Only accessible through the HTL-Kaindorf Discord server.
 
+<details>
+  <summary>Click to see more details and screenshots</summary>
+
+  ### Teacher/Quote Voting
+  <img src=".screenshots/Request.png" alt="Teacher/Quote Voting" width="600px">
+
+  ### Board Creation
+  <img src=".screenshots/GameBuild.png" alt="Board Creation" width="600px">
+
+  ### In Game
+  <img src=".screenshots/GameGame.png" alt="In Game" width="600px">
+
+  ### Leaderboard
+  <img src=".screenshots/Leaderboard.png" alt="Leaderboard" width="600px">
+
+</details>
+
 ## How to Play
 
 1. **Join the HTL-Kaindorf Discord**: Ensure you are a member of the HTL-Kaindorf Discord server.
