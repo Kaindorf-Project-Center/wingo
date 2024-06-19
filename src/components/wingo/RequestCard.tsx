@@ -26,8 +26,6 @@ const RequestCard = (props: Props) => {
         const newLikeCount = +optimisticState + newLikeState - likeState
         setOptimistic(newLikeCount)
 
-        // TODO: send like-update to db
-
         vote(props.request.requestQuoteId, newLikeState)
     }
 
