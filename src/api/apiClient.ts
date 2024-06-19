@@ -5,7 +5,6 @@ import {TeacherData} from "@/data/TeacherData.ts";
 import {IQuote} from "@/models/IQuote.ts";
 import axios from 'axios';
 import {RequestData} from "@/data/RequestData.ts";
-import {IRequest} from "@/models/IRequest.ts";
 
 export const backendURL: string = "http://localhost:3000";
 
