@@ -87,25 +87,17 @@ export async function vote(quoteId: string, weight: number) {
 }
 
 export async function addRequest(teacher: ITeacher, quote: string) {
-    // const teacherData = container.resolve(TeacherData);
-    const requestData = container.resolve(RequestData);
-    const userData = container.resolve(UserData)
-
-    const requests = requestData.requests.getValue()
-
-    if(!requests)
-        return
-
-    const newRequest: IRequest = {
-        requestQuoteId: "0",
-        votes: 0,
+    await axios.post(backendURL + "/requests/", {
         quote: quote,
-        creator: userData.data.getValue()!.username,
-        teacher: teacher,
-        userWeight: 1
-    }
+        teacherId: teacher.teacherId
+    }, {
+        withCredentials: true,
+        headers: {
+            'Content-Type': 'application/json' // Ensure the content type is set to application/json
+        }
+    })
 
-    requestData.requests.next([...requests, newRequest])
+    getRequests()
 }
 
 export async function sendGameData(teacher: ITeacher, board: IQuote[][]): Promise<void> {
