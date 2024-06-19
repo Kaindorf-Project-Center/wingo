@@ -11,12 +11,17 @@ import {
     CredenzaTrigger,
 } from "@/components/ui/credenza"
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
-import {bingoExampleData} from "@/data/bingoExampleData.ts";
 import {Input} from "@/components/ui/input.tsx";
 import {Label} from "@/components/ui/label.tsx";
+import {container} from "tsyringe";
+import {TeacherData} from "@/data/TeacherData.ts";
+import {useSubscribe} from "@/hooks/useSubscribe.ts";
 
 
 const RequestDialog = () => {
+    const teacherData = container.resolve(TeacherData)
+    const teachers = useSubscribe(teacherData.teachers)
+
     return (
         <Credenza>
             <CredenzaTrigger asChild>
@@ -48,10 +53,11 @@ const RequestDialog = () => {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            {bingoExampleData?.teachers.map((t) => {
+                                            {/*remove forece unpack*/}
+                                            {teachers && teachers!.map((t) => {
                                                 return (
-                                                    <SelectItem key={t.id} value={t.id}>
-                                                        {t.name + " (" + t.shortName + ")"}
+                                                    <SelectItem key={t.teacherId} value={t.teacherId}>
+                                                        {t.name + " (" + t.shortHand + ")"}
                                                     </SelectItem>
                                                 );
                                             })}

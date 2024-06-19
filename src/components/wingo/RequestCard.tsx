@@ -1,41 +1,41 @@
 import {CardContent, Card, CardDescription, CardTitle} from "@/components/ui/card.tsx";
 import {useState} from "react";
 import {useOptimistic} from "@/hooks/useOptimistic.ts";
+import {IRequest} from "@/models/IRequest.ts";
+import {vote} from "@/api/apiClient.ts";
 
 type Props = {
     className?: string
-    username: string
-    votes: number
-    quote: string
-    likeState?: LikeState
+    request: IRequest
 }
 
 enum LikeState {
-    DISLIKE,
-    NEUTRAL,
-    LIKE
+    DISLIKE = -1,
+    NEUTRAL= 0,
+    LIKE= 1
 }
 
 const RequestCard = (props: Props) => {
-    const [likeState, setLikeState] = useState<LikeState>(props.likeState ?? LikeState.NEUTRAL)
-    const [optimisticState, setOptimistic] = useOptimistic(props.votes)
+    const [likeState, setLikeState] = useState<LikeState>(props.request.userWeight ?? LikeState.NEUTRAL)
+    const [optimisticState, setOptimistic] = useOptimistic(props.request.votes)
 
     function handleLike(action: LikeState) {
         const newLikeState = likeState === action ? LikeState.NEUTRAL : action
         setLikeState(newLikeState)
 
-        const newLikeCount = optimisticState + newLikeState - likeState
+        const newLikeCount = +optimisticState + newLikeState - likeState
         setOptimistic(newLikeCount)
 
         // TODO: send like-update to db
 
+        vote(props.request.requestQuoteId, newLikeState)
     }
 
     return (
         <Card className={"w-full md:w-64 " + props.className}>
             <CardContent>
                 <CardTitle className={"pt-3"}>
-                    {props.quote}
+                    {props.request.quote}
                 </CardTitle>
                 <div className="flex items-center gap-2 pt-3">
                     <span className={"text-xl font-medium " + (optimisticState < 0 ? "text-red-500" : "text-blue-500")}>{optimisticState}</span>
@@ -60,7 +60,7 @@ const RequestCard = (props: Props) => {
                 </div>
                 <CardDescription className={"flex flex-col pt-3"}>
                     <span>requested by</span>
-                    <span>{props.username}</span>
+                    <span>{props.request.creator}</span>
                 </CardDescription>
             </CardContent>
         </Card>

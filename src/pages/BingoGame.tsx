@@ -21,7 +21,7 @@ export function BingoGame() {
 
     const [selectedGrid, setSelectedGrid] = useState<boolean[][]>([])
     const [hasWon, setHasWon] = useState<boolean>(false)
-    const [beginTime, setBeginTime] = useState<Date>(new Date())
+    // const [beginTime, setBeginTime] = useState<Date>(new Date())
 
     const [time, dispatch] = useReducer(incrementTime, {
         seconds: 0,

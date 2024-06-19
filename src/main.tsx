@@ -3,12 +3,16 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import {container} from "tsyringe";
-import AppCache from "@/models/AppCache.ts";
 import {BrowserRouter} from "react-router-dom";
 import React from "react";
 import {ThemeProvider} from "@/global/Theme.ts";
+import {TeacherData} from "@/data/TeacherData.ts";
+import {RequestData} from "@/data/RequestData.ts";
+import {UserData} from "@/data/UserData.ts";
 
-container.registerSingleton(AppCache, AppCache)
+container.registerSingleton(TeacherData, TeacherData)
+container.registerSingleton(RequestData, RequestData)
+container.registerSingleton(UserData, UserData)
 
 container.registerSingleton(ThemeProvider, ThemeProvider);
 const themeProvider: ThemeProvider = container.resolve(ThemeProvider);

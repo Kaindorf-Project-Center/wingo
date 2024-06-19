@@ -4,7 +4,6 @@ import {useEffect, useRef, useState} from "react";
 import {DndProvider, useDrag, useDrop} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import {useNavigate} from "react-router-dom";
-import {IBoard} from "@/models/IBoard.ts";
 import AppCache from "@/models/AppCache.ts";
 import {useService} from "@/hooks/useService.ts";
 import {SlidePicker} from "@/components/wingo/SlidePicker.tsx";
@@ -13,6 +12,7 @@ import {IQuote} from "@/models/IQuote.ts";
 import {getTeacherData} from "@/api/apiClient.ts";
 import {TeacherData} from "@/data/TeacherData.ts";
 import {container} from "tsyringe";
+import {useSubscribe} from "@/hooks/useSubscribe.ts";
 
 interface Size {
     id: string;
@@ -39,6 +39,7 @@ const BuildBingo = () => {
     const navigate = useNavigate();
 
     const teachersData = container.resolve(TeacherData)
+    const teachers = useSubscribe(teachersData.teachers)
 
     // -----------------------------
     // State Variables
@@ -46,7 +47,7 @@ const BuildBingo = () => {
 
     const [teacher, setTeacher] = useState<ITeacher | null>(null);
     const [size, setSize] = useState<Size | null>(null);
-    const [board, setBoard] = useState<IBoard | null>(null);
+    const [columns, setColumns] = useState<{row: (undefined | IQuote)[]}[]>([])
 
     // -----------------------------
     // Effects
@@ -84,19 +85,29 @@ const BuildBingo = () => {
     // -----------------------------
 
     const startGame = async () => {
-        if (board == null)
+        if (size == null || columns.length == 0 || teacher == null)
             return
 
+        const cleanColumns: {row: IQuote[]}[] = []
         const saidQuotes: boolean[][] = []
-        for (let i = 0; i < board.size; i++) {
+        for (let i = 0; i < size.size; i++) {
             saidQuotes.push([])
-            for (let j = 0; j < board.size; j++) {
+            cleanColumns.push({row: []})
+            for (let j = 0; j < size.size; j++) {
                 saidQuotes[i].push(false)
+
+                if(columns[i].row[j] == undefined)
+                    return
+                cleanColumns[i].row.push(columns[i].row[j]!)
             }
         }
 
         appCache.playingGame.next({
-            board: board,
+            board: {
+                teacher: teacher,
+                size: size.size,
+                columns: cleanColumns
+            },
             saidQuotes: saidQuotes,
         })
 
@@ -109,47 +120,45 @@ const BuildBingo = () => {
 
     const resetBoard = (size?: number) => {
         if (size != null) {
-            setBoard({
-                size: size,
-                columns: Array.from({length: size}, () => ({row: Array.from({length: size}, () => undefined)})),
-            });
-        } else {
-            setBoard(null);
+            setColumns(Array.from({length: size},
+                () => ({row: Array.from({length: size}, () => undefined)})))
         }
+        else
+            setColumns([])
     };
 
     const handleMove = (quote: IQuote, from?: DragIndex, to?: DragIndex) => {
-        if (board == null) {
+        if (columns.length == 0) {
             return;
         }
 
-        const newBoard: IBoard = {...board};
+        const newColumns: {row: (undefined | IQuote)[]}[] = [...columns];
 
         // remove from board
         if (from != null && to == null) {
-            newBoard.columns[from.column].row[from.row] = undefined;
+            newColumns[from.column].row[from.row] = undefined;
         }
 
         // change pos on board
         if (from != null && to != null) {
-            newBoard.columns[from.column].row[from.row] = undefined; // Clear the original slot
-            newBoard.columns[to.column].row[to.row] = quote; // Place item in the new slot
+            newColumns[from.column].row[from.row] = undefined; // Clear the original slot
+            newColumns[to.column].row[to.row] = quote; // Place item in the new slot
         }
 
         // initial add
         if (from == null && to != null) {
-            newBoard.columns[to.column].row[to.row] = quote;
+            newColumns[to.column].row[to.row] = quote;
         }
 
-        setBoard(newBoard);
+        setColumns(newColumns)
     };
 
     const quotesInBoard =
-        board?.columns.flatMap((column) => column.row).filter((quote): quote is IQuote => quote !== undefined) ?? [];
+        columns.flatMap((column) => column.row).filter((quote): quote is IQuote => quote !== undefined) ?? [];
 
     const availableQuotes = teacher?.quotes.filter((c) => !quotesInBoard.some((bc) => bc == c)) ?? [];
 
-    const allFilled = board != null && quotesInBoard.length == (size?.size ?? 0) * (size?.size ?? 0);
+    const allFilled = columns.length > 0 && quotesInBoard.length == (size?.size ?? 0) * (size?.size ?? 0);
 
     return (
         <div className="h-full max-w-[1000px] bg-slate-950 mx-auto py-6">
@@ -181,13 +190,13 @@ const BuildBingo = () => {
                 <div className={"w-[40%] border-r"}>
                     <div>
                         <div className={"p-3"}>
-                            <Select onValueChange={(v) => setTeacher(teachersData.teachers.getValue()?.find((t) => t.teacherId == v) ?? null)}>
+                            <Select onValueChange={(v) => setTeacher(teachers?.find((t) => t.teacherId == v) ?? null)}>
                                 <SelectTrigger className="max-w-[400px]">
                                     <SelectValue placeholder="Select a teacher"/>
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
-                                        {teachersData.teachers.getValue()?.map((t) => {
+                                        {teachers?.map((t) => {
                                             return (
                                                 <SelectItem key={t.teacherId} value={t.teacherId}>
                                                     {t.shortHand + ": " + t.name}
@@ -263,8 +272,8 @@ const BuildBingo = () => {
                             <div
                                 className="w-full max-w-[500px] h-full max-h-[500px] bg-indigo-500 bg-opacity-25 rounded-lg p-3 flex flex-col gap-3 flex-1 aspect-square"
                             >
-                                {board != null &&
-                                    board.columns.map((c, ci) => {
+                                {columns.length > 0 &&
+                                    columns.map((c, ci) => {
                                         return (
                                             <div key={ci} className="flex flex-row flex-1 gap-3">
                                                 {c.row.map((q, qi) => {

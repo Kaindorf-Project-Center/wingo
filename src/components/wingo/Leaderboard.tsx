@@ -17,7 +17,7 @@ export function Leaderboard() {
 
     async function fetchLeaderboardEntrys() {
         fetch(backendURL + "/leaderboard", {
-            mode: "cors",
+            mode: 'cors',
             credentials: "include",
         })
             .then(data => data.json())

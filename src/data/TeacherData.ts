@@ -4,5 +4,5 @@ import {ITeacher} from "@/models/ITeacher.ts";
 
 @singleton()
 export class TeacherData {
-    public readonly teachers = useSessionBehaviorSubject<ITeacher[]>("surveys", [])
+    public readonly teachers = useSessionBehaviorSubject<ITeacher[]>("teacher", [])
 }

@@ -5,11 +5,11 @@ import LandingPage from "@/pages/LandingPage.tsx";
 import NotFound from "@/pages/NotFound.tsx";
 import {useEffect} from "react";
 import {Route, Routes, useLocation, useNavigate} from "react-router-dom";
-import Requests from "@/pages/Requests.tsx";
 import {Toaster} from "@/components/ui/sonner.tsx";
 import {BingoGame} from "@/pages/BingoGame.tsx";
 import {NoMobile} from "@/pages/NoMobile.tsx";
 import {getUserData} from "@/api/apiClient.ts";
+import Requests from "@/pages/Requests.tsx";
 
 function App() {
     const location = useLocation();
