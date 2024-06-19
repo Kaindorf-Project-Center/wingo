@@ -16,16 +16,21 @@ import {Label} from "@/components/ui/label.tsx";
 import {container} from "tsyringe";
 import {TeacherData} from "@/data/TeacherData.ts";
 import {useSubscribe} from "@/hooks/useSubscribe.ts";
+import {addRequest} from "@/api/apiClient.ts";
+import {useState} from "react";
 
 
 const RequestDialog = () => {
     const teacherData = container.resolve(TeacherData)
     const teachers = useSubscribe(teacherData.teachers)
 
+    const [quote, setQuote] = useState<string>("")
+    const [teacherId, setTeacherId] = useState<string>()
+
     return (
         <Credenza>
             <CredenzaTrigger asChild>
-                <Card className="bg-slate-900 hover:bg-[#172033] flex justify-center items-center w-full md:w-64">
+                <Card className="bg-fill-secondary hover:bg-[#172033] flex justify-center items-center w-full md:w-64">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.3"
                          stroke="currentColor" className="h-10 w-10">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6"/>
@@ -47,7 +52,7 @@ const RequestDialog = () => {
                                 Teacher
                             </Label>
                             <div id={"teacher"} className={"col-span-3"}>
-                                <Select>
+                                <Select onValueChange={(v) => setTeacherId(v)}>
                                     <SelectTrigger className="max-w-[400px]">
                                         <SelectValue placeholder="Select a teacher"/>
                                     </SelectTrigger>
@@ -73,6 +78,7 @@ const RequestDialog = () => {
                             <Input
                                 id="quote"
                                 className="col-span-3"
+                                onChange={(v) => setQuote(v.target.value)}
                             />
                         </div>
                     </div>
@@ -80,7 +86,9 @@ const RequestDialog = () => {
 
                 <CredenzaFooter>
                     <CredenzaClose asChild>
-                        <button type={"submit"}>Submit request</button>
+                        <button type={"submit"} onClick={() => {
+                            addRequest(teachers!.find(t => t.teacherId === teacherId)!, quote)
+                        }}>Submit request</button>
                     </CredenzaClose>
                 </CredenzaFooter>
             </CredenzaContent>

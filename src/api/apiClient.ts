@@ -5,6 +5,7 @@ import {TeacherData} from "@/data/TeacherData.ts";
 import {IQuote} from "@/models/IQuote.ts";
 import axios from 'axios';
 import {RequestData} from "@/data/RequestData.ts";
+import {IRequest} from "@/models/IRequest.ts";
 
 export const backendURL: string = "http://localhost:3000";
 
@@ -41,6 +42,10 @@ export async function getRequests() {
         credentials: "include",
     })
         .then((res) => res.json())
+        .then((json) => {
+            console.log(json);
+            return json;
+        })
         .then(json => json.map((r: any) => {
             return {
                 requestQuoteId: r.requestQuoteId,
@@ -79,6 +84,28 @@ export async function vote(quoteId: string, weight: number) {
     })
 
     getRequests()
+}
+
+export async function addRequest(teacher: ITeacher, quote: string) {
+    // const teacherData = container.resolve(TeacherData);
+    const requestData = container.resolve(RequestData);
+    const userData = container.resolve(UserData)
+
+    const requests = requestData.requests.getValue()
+
+    if(!requests)
+        return
+
+    const newRequest: IRequest = {
+        requestQuoteId: "0",
+        votes: 0,
+        quote: quote,
+        creator: userData.data.getValue()!.username,
+        teacher: teacher,
+        userWeight: 1
+    }
+
+    requestData.requests.next([...requests, newRequest])
 }
 
 export async function sendGameData(teacher: ITeacher, board: IQuote[][]): Promise<void> {

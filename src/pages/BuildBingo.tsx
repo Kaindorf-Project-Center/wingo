@@ -161,7 +161,7 @@ const BuildBingo = () => {
     const allFilled = columns.length > 0 && quotesInBoard.length == (size?.size ?? 0) * (size?.size ?? 0);
 
     return (
-        <div className="h-full max-w-[1000px] bg-slate-950 mx-auto py-6">
+        <div className="h-full max-w-[1000px] mx-auto py-6">
             {/* Intro */}
             <div className={"px-6 pb-3 border-b"}>
                 <h1 className="text-2xl font-bold">Build your Game</h1>
@@ -270,7 +270,7 @@ const BuildBingo = () => {
 
                         <DndProvider backend={HTML5Backend}>
                             <div
-                                className="w-full max-w-[500px] h-full max-h-[500px] bg-indigo-500 bg-opacity-25 rounded-lg p-3 flex flex-col gap-3 flex-1 aspect-square"
+                                className="w-full max-w-[500px] h-full max-h-[500px] rounded-lg p-3 flex flex-col gap-3 flex-1 aspect-square bg-fill-tertiary"
                             >
                                 {columns.length > 0 &&
                                     columns.map((c, ci) => {
@@ -326,7 +326,7 @@ const DraggableQuote = (props: {
     drag(ref)
 
     return (
-        <div className="bg-indigo-500 rounded-lg p-4 cursor-pointer" ref={ref}>
+        <div className="rounded-lg p-4 cursor-pointer bg-fill-quaternary" ref={ref}>
             <p>{props.quote.quote}</p>
         </div>
     );
@@ -372,12 +372,16 @@ const DropZone = (props: {
     // Connect drag and drop using a single ref
     drag(drop(ref));
 
+
+    // TODO
+    console.log(    `${
+                isOver && canDrop ? "bg-indigo-400" : props.quote == null ? "bg-indigo-200" : "bg-indigo-500"
+            }`)
+
     return (
         <div
             ref={ref}
-            className={`relative w-full flex-1 rounded-md p-4 cursor-pointer ${
-                isOver && canDrop ? "bg-indigo-400" : props.quote == null ? "bg-indigo-200" : "bg-indigo-500"
-            }`}
+            className={`relative w-full flex-1 rounded-md p-4 cursor-pointer bg-fill-quaternary`}
             onClick={() => props.quote && props.handleMove(props.quote, props.index, undefined)}
         >
             <div className="absolute inset-0 p-3 flex justify-center items-center overflow-y-scroll">

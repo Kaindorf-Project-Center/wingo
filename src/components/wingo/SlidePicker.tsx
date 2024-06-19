@@ -54,7 +54,7 @@ export function SlidePicker(props: Props) {
     }, [optionsContainerRef, props.values]);
 
     return (
-        <div className="relative inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground " style={{background: props.backgroundColor ?? "#32323244" ,width: `${maxWidth * props.values.length}px`}}>
+        <div className="relative inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground bg-fill-quaternary " style={{background: props.backgroundColor ?? "" ,width: `${maxWidth * props.values.length}px`}}>
             <div ref={indicatorRef} className={"absolute h-full w-full z-0 top-0 left-0 p-1 " + (props.selectedIndex == undefined ? "hidden" : "transition-all")}>
                 <div className={"h-full w-full rounded-sm bg-opacity-40"} style={{background: props.foregroundColor ?? "#9994"}} />
             </div>

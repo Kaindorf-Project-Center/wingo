@@ -91,8 +91,10 @@ export function BingoGame() {
     }
 
     async function finishGame() {
-        if(game)
+        if (game)
             sendGameData(game.board.teacher, game.board.columns.map(c => c.row))
+
+        navigate("/dashboard")
     }
 
     return (
@@ -140,9 +142,11 @@ export function BingoGame() {
             }
 
             {hasWon &&
-                <div className={"absolute h-screen w-screen bg-[#00000077] flex items-center justify-center flex-col"}>
-                    <p className={"text-9xl"}>Gewonnen!</p>
-                    <Button variant={"secondary"} onClick={finishGame}>Spieldaten senden und beenden</Button>
+                <div className={"absolute h-screen w-screen bg-[#00000099] flex items-center justify-center flex-col"}>
+                    <div className={"flex flex-col justify-center items-center bg-fill-tertiary rounded-2xl p-6"}>
+                        <p className={"text-9xl text-primary"}>Gewonnen!</p>
+                        <Button variant={"secondary"} onClick={finishGame}>Spieldaten senden und beenden</Button>
+                    </div>
                 </div>
             }
         </div>

@@ -1,8 +1,42 @@
 :root {
+    --theme-text-primary: #000000 !important;
+    --theme-text-secondary: #18346b !important;
+    --theme-text-tertiary: #F8F8FC !important;
+    --theme-text-quaternary: #5865F2 !important;
+    --theme-text-placeholder: #F8F8FC !important;
+    --theme-text-link: #0984FF !important;
+    --theme-text-hint: #98989A !important;
+
+    --theme-background-primary: #3773ea !important;
+    --theme-background-secondary: #6589d4 !important;
+    --theme-background-tertiary: #141925 !important;
+    --theme-background-quaternary: #373739 !important;
+    --theme-background-fill-primary: #1A1F51 !important;
+    --theme-background-fill-secondary: #6366F1 !important;
+    --theme-background-fill-tertiary: #C7D2FE !important;
+    --theme-background-fill-quaternary: #efefff !important;
+    --theme-background-fill-input-primary: #989fee !important;
+    --theme-background-fill-input-secondary: #343740 !important;
+
+    --theme-red: #FF453A !important;
+    --theme-orange: #FF9F09 !important;
+    --theme-yellow: #FFD609 !important;
+    --theme-green: #2DD158 !important;
+    --theme-mint: #67D4CF !important;
+    --theme-teal: #3FC8E0 !important;
+    --theme-cyan: #64D2FF !important;
+    --theme-blue: #0984FF !important;
+    --theme-indigo: #5F5CE5 !important;
+    --theme-purple: #BF5AF2 !important;
+    --theme-pink: #FE375F !important;
+    --theme-brown: #AC8E68 !important;
+}
+
+.dark {
     --theme-text-primary: #FFFFFF !important;
     --theme-text-secondary: #94A3B8 !important;
     --theme-text-tertiary: #F8F8FC !important;
-    --theme-text-quaternary: #000000 !important;
+    --theme-text-quaternary: #5865F2 !important;
     --theme-text-placeholder: #F8F8FC !important;
     --theme-text-link: #0984FF !important;
     --theme-text-hint: #98989A !important;
@@ -31,40 +65,6 @@
     --theme-pink: #FE375F !important;
     --theme-brown: #AC8E68 !important;
 }
-
-/*.dark {*/
-/*    --theme-text-primary: #FFFFFF !important;*/
-/*    --theme-text-secondary: #94A3B8 !important;*/
-/*    --theme-text-tertiary: #F8F8FC !important;*/
-/*    --theme-text-quaternary: #000000 !important;*/
-/*    --theme-text-placeholder: #F8F8FC !important;*/
-/*    --theme-text-link: #0984FF !important;*/
-/*    --theme-text-hint: #98989A !important;*/
-
-/*    --theme-background-primary: #020817 !important;*/
-/*    --theme-background-secondary: #080D17 !important;*/
-/*    --theme-background-tertiary: #111827 !important;*/
-/*    --theme-background-quaternary: #373739 !important;*/
-/*    --theme-background-fill-primary: #1A1F51 !important;*/
-/*    --theme-background-fill-secondary: #6366F1 !important;*/
-/*    --theme-background-fill-tertiary: #C7D2FE !important;*/
-/*    --theme-background-fill-quaternary: #E6E6E8 !important;*/
-/*    --theme-background-fill-input-primary: #10121E !important;*/
-/*    --theme-background-fill-input-secondary: #343740 !important;*/
-
-/*    --theme-red: #FF453A !important;*/
-/*    --theme-orange: #FF9F09 !important;*/
-/*    --theme-yellow: #FFD609 !important;*/
-/*    --theme-green: #2DD158 !important;*/
-/*    --theme-mint: #67D4CF !important;*/
-/*    --theme-teal: #3FC8E0 !important;*/
-/*    --theme-cyan: #64D2FF !important;*/
-/*    --theme-blue: #0984FF !important;*/
-/*    --theme-indigo: #5F5CE5 !important;*/
-/*    --theme-purple: #BF5AF2 !important;*/
-/*    --theme-pink: #FE375F !important;*/
-/*    --theme-brown: #AC8E68 !important;*/
-/*}*/
 
 html {
     background-color: var(--theme-background-primary);

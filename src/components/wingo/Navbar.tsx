@@ -32,8 +32,10 @@ export function Navbar() {
       method: "POST",
     })
         .then((response) => {
-          if(response.ok)
+          if(response.ok) {
+            userdata.data.next(null)
             navigate("/")
+          }
           else
             throw new Error("Response was not ok: " + response.statusText);
         })
@@ -70,11 +72,11 @@ export function Navbar() {
   return (
     <div className={"flex justify-between p-4 bg-secondary"}>
       <div className={"flex gap-4"}>
-        <a className={"text-3xl"} href="/dashboard">
+        <a className={"text-3xl text-secondary"} href="/dashboard">
           wingo
         </a>
         <Button onClick={() => navigate("/build")}>Play</Button>
-        <Button variant={"secondary"} onClick={() => navigate("/requests")}>Request Quotes</Button>
+        <Button className={"text-secondary"} variant={"secondary"} onClick={() => navigate("/requests")}>Request Quotes</Button>
       </div>
 
       <DropdownMenu>
@@ -88,7 +90,7 @@ export function Navbar() {
             </div>
           ) : (
             <div className={"flex items-center gap-4"}>
-              <p className={"font-bold"}>{userData!.username}</p>
+              <p className={"font-bold text-secondary"}>{userData!.username}</p>
               <Avatar>
                 <AvatarImage src={backendURL + "/user/avatar"} alt="User Avatar" />
                 <AvatarFallback>
