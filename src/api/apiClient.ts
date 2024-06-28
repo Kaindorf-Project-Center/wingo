@@ -5,6 +5,7 @@ import {TeacherData} from "@/data/TeacherData.ts";
 import {IQuote} from "@/models/IQuote.ts";
 import axios from 'axios';
 import {RequestData} from "@/data/RequestData.ts";
+import {calculateInterval} from "@/lib/utils.ts";
 
 export const backendURL: string = "http://localhost:3000";
 
@@ -41,10 +42,6 @@ export async function getRequests() {
         credentials: "include",
     })
         .then((res) => res.json())
-        .then((json) => {
-            console.log(json);
-            return json;
-        })
         .then(json => json.map((r: any) => {
             return {
                 requestQuoteId: r.requestQuoteId,
@@ -99,7 +96,7 @@ export async function addRequest(teacher: ITeacher, quote: string) {
     getRequests()
 }
 
-export async function sendGameData(teacher: ITeacher, board: IQuote[][]): Promise<void> {
+export async function sendGameData(teacher: ITeacher, board: IQuote[][], timeStarted: Date, timeEnded: Date, won: boolean): Promise<void> {
     // app.use('/game', gameRouter);
     // app.use('/bingocards', bingoCardsRouter);
     // bingoCardsRouter.post("/", postBingoCard);
@@ -107,14 +104,7 @@ export async function sendGameData(teacher: ITeacher, board: IQuote[][]): Promis
     // gameRouter.post("/", postGame);
     // { won, timeElapsed, bingoCardId, playedAt }
 
-    console.log(JSON.stringify({
-        teacher: teacher,
-        columns: board,
-        size: board.length,
-        createdAt: new Date().toISOString()
-    }))
-
-    await axios.post(backendURL + "/bingocards", {
+    const bingoCardResponse = await axios.post(backendURL + "/bingocards", {
         teacher: teacher,
         columns: board,
         size: board.length + "x" + board.length,
@@ -125,18 +115,17 @@ export async function sendGameData(teacher: ITeacher, board: IQuote[][]): Promis
             'Content-Type': 'application/json' // Ensure the content type is set to application/json
         }
     })
+        .then(res => res.data)
 
-    console.log("posted")
-
-    // await fetch(backendURL + "/game", {
-    //     mode: "cors",
-    //     method: "POST",
-    //     credentials: "include",
-    //     body: JSON.stringify({
-    //         won,
-    //         timeElapsed,
-    //         bingoCardId,
-    //         playedAt
-    //     })
-    // })
+    await axios.post(backendURL + "/game", {
+        won: won,
+        timeElapsed: calculateInterval(timeStarted, timeEnded),
+        bingoCardId: bingoCardResponse.bingoCardId,
+        playedAt: timeStarted
+    }, {
+        withCredentials: true,
+        headers: {
+            'Content-Type': 'application/json' // Ensure the content type is set to application/json
+        }
+    })
 }

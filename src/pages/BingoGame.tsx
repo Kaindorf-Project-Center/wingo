@@ -21,7 +21,8 @@ export function BingoGame() {
 
     const [selectedGrid, setSelectedGrid] = useState<boolean[][]>([])
     const [hasWon, setHasWon] = useState<boolean>(false)
-    // const [beginTime, setBeginTime] = useState<Date>(new Date())
+    const [beginTime, ] = useState<Date>(new Date())
+    const [endTime, setEndTime] = useState<Date>()
 
     const [time, dispatch] = useReducer(incrementTime, {
         seconds: 0,
@@ -58,6 +59,13 @@ export function BingoGame() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedGrid, appCache, time]);
 
+    useEffect(() => {
+        if(hasWon)
+            setEndTime(new Date())
+        else
+            setEndTime(undefined)
+    }, [hasWon])
+
     // -----------------------------
     // Utility methods
     // -----------------------------
@@ -91,10 +99,10 @@ export function BingoGame() {
     }
 
     async function finishGame() {
-        if (game)
-            sendGameData(game.board.teacher, game.board.columns.map(c => c.row))
-
-        navigate("/dashboard")
+        if (game && endTime) {
+            sendGameData(game.board.teacher, game.board.columns.map(c => c.row), beginTime, endTime, hasWon)
+            navigate("/dashboard")
+        }
     }
 
     return (
